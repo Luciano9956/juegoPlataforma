@@ -7,7 +7,7 @@ const config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true,
+            debug: false,
             gravity: { y: 1000 }
         }
     },
@@ -17,6 +17,9 @@ const config = {
         update: update
     }
 }
+
+// swal("Bienvenidos a mi Juego", "Por el momento solo defini el movimiento y algunas cosas basicas en phaser.js. El personaje se mueve con los botones W,A,S,D.");
+
 
 let game = new Phaser.Game(config);
 
@@ -29,17 +32,17 @@ let mapa;
 
 function preload(){
      // sprite personajes
-    this.load.spritesheet('pjidle','assets/sprite/idle.png' , { frameWidth: 120, frameHeight: 80 });
-    this.load.spritesheet('pjJump','assets/sprite/jump.png' , { frameWidth: 120, frameHeight: 80 });
-    this.load.spritesheet('pjrun','assets/sprite/run.png' , { frameWidth: 120, frameHeight: 80 });
-    this.load.spritesheet('pjCrounch','assets/sprite/CrouchFull.png' , { frameWidth: 120, frameHeight: 80 });
+    this.load.spritesheet('pjidle','assets/sprite/idle.png' , { frameWidth: 120, frameHeight: 40 });
+    this.load.spritesheet('pjJump','assets/sprite/jump.png' , { frameWidth: 120, frameHeight: 40 });
+    this.load.spritesheet('pjrun','assets/sprite/run.png' , { frameWidth: 120, frameHeight: 40 });
+    // this.load.spritesheet('pjCrounch','assets/sprite/CrouchFull.png' , { frameWidth: 120, frameHeight: 25 });
+    this.load.spritesheet('pjAtk','assets/sprite/atacar.png' , { frameWidth: 120, frameHeight: 40 });
+
 
     //mapa
     this.load.tilemapTiledJSON('mapa', 'assets/mapa/mapa.json');
     this.load.image('tiles', 'assets/mapa/tileSets1.png');
-    // this.load.image('tiles2', 'assets/mapa/decorative_obj.png');
-    // this.load.image('tiles3', 'assets/mapa/bakcground_day1.png');
-
+  
 }
 
 function create(){
@@ -47,19 +50,22 @@ function create(){
     mapa = this.make.tilemap({ key: 'mapa' });
     let tileSets = mapa.addTilesetImage('tileSets1', 'tiles');
 
-    // let tileSets1 = mapa.addTilesetImage('decorative_obj', 'tiles2');
-
-    // let fondo = mapa.createLayer('fondo', tileSets1, 0, 0);
-
+    let fondo5 = mapa.createLayer('fondo5', tileSets, 0, 0);
+    let fondo3 = mapa.createLayer('fondo3', tileSets, 0, 0);
+    let fondo4 = mapa.createLayer('fondo4', tileSets, 0, 0);
+    let fondo2 = mapa.createLayer('fondo2', tileSets, 0, 0);
+    let fondo = mapa.createLayer('fondo', tileSets, 0, 0);
     let solidos = mapa.createLayer('solidos', tileSets, 0, 0);
     solidos.setCollisionByProperty({ solido: true });
 
+    
+
+
     //Fisicas
-    this.personaje = this.physics.add.sprite(100,100,'pjidle', 0).setScale(2);
+    this.personaje = this.physics.add.sprite(100,2000,'pjidle', 0).setScale(2); // cambiar a 100,100
     this.personaje.setSize(25,0);
 
 
-    // this.personaje.setCollideWorldBounds(true);
 
     this.physics.add.collider(this.personaje, solidos);
 
@@ -73,6 +79,7 @@ function create(){
     izquierda = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     derecha = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     abajo = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+    atk = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
     // Animaciones 
 
@@ -98,17 +105,26 @@ function create(){
         framerate: 12
     });
 
+    // this.anims.create({
+    //     key: 'Crounch',
+    //     frames: this.anims.generateFrameNumbers('pjCrounch', { start: 0 , end: 2 }),
+    //     repeat: -1,
+    //     framerate: 12
+    // });
     this.anims.create({
-        key: 'Crounch',
-        frames: this.anims.generateFrameNumbers('pjCrounch', { start: 0 , end: 2 }),
+        key: 'Atk',
+        frames: this.anims.generateFrameNumbers('pjAtk', { start: 0 , end: 3 }),
         repeat: -1,
         framerate: 12
     });
 
+
     this.personaje.anims.play('idle');
     this.personaje.anims.play('run');
     this.personaje.anims.play('jump');
-    this.personaje.anims.play('Crounch');
+    // this.personaje.anims.play('Crounch');
+    this.personaje.anims.play('Atk');
+
     
 }
 
@@ -133,11 +149,13 @@ function update() {
         this.personaje.anims.play('jump');
     }
     else{
-        this.personaje.anims.play('idle');
+        this.personaje.anims.play('idle', true);
     }
-    if(abajo.isDown){
-        this.personaje.anims.play('Crounch');
-        
+    // if(abajo.isDown){
+    //     this.personaje.anims.play('Crounch');
+    // }
+    if((atk.isDown) && this.personaje.body.onFloor()){
+        this.personaje.anims.play('Atk' ,true);
     }
 }
 
