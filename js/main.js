@@ -1,13 +1,17 @@
+
+
+
 const config = {
     width: window.innerWidth,
     height: window.innerHeight,
     parent: "container",
     pixelArt: true,
     type: Phaser.AUTO,
+    scene: [BootGame],
     physics: {
         default: 'arcade',
         arcade: {
-            debug: false,
+            debug: true,
             gravity: { y: 1000 }
         }
     },
@@ -37,11 +41,12 @@ function preload(){
     this.load.spritesheet('pjrun','assets/sprite/run.png' , { frameWidth: 120, frameHeight: 40 });
     // this.load.spritesheet('pjCrounch','assets/sprite/CrouchFull.png' , { frameWidth: 120, frameHeight: 25 });
     this.load.spritesheet('pjAtk','assets/sprite/atacar.png' , { frameWidth: 120, frameHeight: 40 });
-
+    // sprite enemigos
+    this.load.spritesheet('zombie' , 'assets/sprite/burning-ghoul.png' , {frameWidth: 57, frameHeight: 60});
 
     //mapa
     this.load.tilemapTiledJSON('mapa', 'assets/mapa/mapa.json');
-    this.load.image('tiles', 'assets/mapa/tileSets1.png');
+    this.load.image('tiles', 'assets/mapa/tileSets1.png'); 
   
 }
 
@@ -62,12 +67,17 @@ function create(){
 
 
     //Fisicas
-    this.personaje = this.physics.add.sprite(100,2000,'pjidle', 0).setScale(2); // cambiar a 100,100
+    this.personaje = this.physics.add.sprite(100,100,'pjidle', 0).setScale(2); // cambiar a 100,100
+    this.enemigo = this.physics.add.sprite(900,100,'zombie', 0).setScale(2); // cambiar a 100,100
+
     this.personaje.setSize(25,0);
+    this.enemigo.setSize(40,0);
 
 
 
     this.physics.add.collider(this.personaje, solidos);
+    this.physics.add.collider(this.enemigo, solidos);
+
 
     //camara
     this.cameras.main.setBounds(0, 0, mapa.widthInPixels, mapa.heightInPixels);
@@ -97,6 +107,13 @@ function create(){
         repeat: -1,
         framerate: 12
     });
+
+    this.anims.create({
+        key: 'Atk',
+        frames: this.anims.generateFrameNumbers('pjAtk', { start: 0 , end: 3 }),
+        repeat: -1,
+        framerate: 12
+    });
     
     this.anims.create({
         key: 'jump',
@@ -111,26 +128,37 @@ function create(){
     //     repeat: -1,
     //     framerate: 12
     // });
-    this.anims.create({
-        key: 'Atk',
-        frames: this.anims.generateFrameNumbers('pjAtk', { start: 0 , end: 3 }),
-        repeat: -1,
-        framerate: 12
-    });
 
+   //Animaciones 
+
+   this.anims.create({
+    key: 'zombie_run',
+    frames: this.anims.generateFrameNumbers('zombie', { start: 1 , end: 7 }),
+    repeat: -1,
+    framerate: 12
+});
 
     this.personaje.anims.play('idle');
     this.personaje.anims.play('run');
     this.personaje.anims.play('jump');
     // this.personaje.anims.play('Crounch');
     this.personaje.anims.play('Atk');
+    this.enemigos = this.enemigo.anims.play('zombie_run');
 
+
+    // interpolaciones
+    // this.tweens.add({
+    //     targets: this.enemigos,
+    //     x: -1000,
+    //     duration: 8800,
     
+    // });
+
 }
 
 function update() {
     this.personaje.body.setVelocityX(0);
-
+  
     if(izquierda.isDown){
         this.personaje.body.setVelocityX(-velocidad);
         this.personaje.flipX = true;
@@ -151,12 +179,13 @@ function update() {
     else{
         this.personaje.anims.play('idle', true);
     }
+    if((atk.isDown) && this.personaje.body.onFloor()){
+        this.personaje.anims.play('Atk', true);
+    }
     // if(abajo.isDown){
     //     this.personaje.anims.play('Crounch');
     // }
-    if((atk.isDown) && this.personaje.body.onFloor()){
-        this.personaje.anims.play('Atk' ,true);
-    }
+
 }
 
 
