@@ -1,6 +1,3 @@
-
-
-
 const config = {
     width: window.innerWidth,
     height: window.innerHeight,
@@ -11,14 +8,17 @@ const config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true,
+            debug: false,
             gravity: { y: 1000 }
         }
     },
     scene: {
         preload: preload,
         create: create,
-        update: update
+        update: update,
+        extend:{
+            colisionEnemigos: this.colisionEnemigos,
+        }
     }
 }
 
@@ -82,12 +82,12 @@ function create(){
     let solidos = mapa.createLayer('solidos', tileSets, 0, 0);
     solidos.setCollisionByProperty({ solido: true });
 
-    
+    // jugador = this.personaje;
+    // enemigos = [this.enemigo, this.angel, this.angel2, this.perro, this.perro2, this.zombie, this.calabera, this.calabera2, this.calabera3, this.evil, this.horse, this.boss];
 
-
-    //Fisicas
-    this.personaje = this.physics.add.sprite(2600,1900,'pjidle', 0).setScale(2); // cambiar a 100,100
-    //Enemigos
+    //Fisicas del Personaje
+    this.personaje = this.physics.add.sprite(100,100,'pjidle', 0).setScale(2); // cambiar a 100,100
+    //Fisicas del Enemigos
     this.enemigo = this.physics.add.sprite(900,200,'zombie', 0).setScale(2); 
     this.angel = this.physics.add.sprite(300,500,'angel', 0).setScale(2);
     this.angel2 = this.physics.add.sprite(250,1600,'angel2', 0).setScale(2);
@@ -416,6 +416,17 @@ function update() {
     }
   
 
+    //overlap
+
+    
+    
+    // this.physics.add.overlap(jugador, enemigos, this.colisionEnemigos, null, null);
+
+
+    // function colisionEnemigos(jugador,enemigos){
+    //     console.log(colisionEnemigos)
+
+    // }
 }
 
 
