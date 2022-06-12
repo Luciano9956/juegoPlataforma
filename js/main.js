@@ -1,7 +1,52 @@
+
+// ecena titleScreen
+
+class TitleScreen extends Phaser.Scene {
+
+    constructor (config)
+    {
+        super(config);
+    }
+    preload ()
+    {
+    }
+
+    create (data)    {
+        swal("", {
+            title: "E-COMMERCE MALIGNOS",
+              buttons: {
+              cancel: "Instrucciones",
+              catch: {
+                text: "Jugar!",
+                value: "catch",
+              },
+            },
+          })
+          .then((value) => {
+            switch (value) {
+           
+              case "catch":
+                swal("Tienes que salvar al pobre gatito, estos deminios no paran de hacer E-Commerce y estan eradicando con los gatitos");
+                break;
+           
+              default:
+                swal("Te moves con A,D y saltas con W, Tu objetivo es esquivar a los enemigos y rescatar el gato del final del nivel");
+            }
+          });
+
+    }
+
+}
+
+
+
+// configuracion del phaser
+
 const config = {
     width: window.innerWidth,
     height: window.innerHeight,
     parent: "container",
+    scene: [TitleScreen],
     pixelArt: true,
     type: Phaser.AUTO,
     physics: {
@@ -22,11 +67,13 @@ const config = {
 
 
 let game = new Phaser.Game(config);
+game.scene.add('myScene', TitleScreen, true, { x: 600, y: 500 });
+
 
 let arriba,derecha,izquierda;
 
 const velocidad = 350;
-const alturaSalto = -530;
+const alturaSalto = -630;
 
 
 let mapa;
@@ -38,18 +85,14 @@ function preload(){
     this.load.spritesheet('pjidle','assets/sprite/idle.png' , { frameWidth: 120, frameHeight: 40 });
     this.load.spritesheet('pjJump','assets/sprite/jump.png' , { frameWidth: 120, frameHeight: 40 });
     this.load.spritesheet('pjrun','assets/sprite/run.png' , { frameWidth: 120, frameHeight: 40 });
-    // this.load.spritesheet('pjAtk','assets/sprite/atacar.png' , { frameWidth: 120, frameHeight: 40 });
    
     // sprite enemigos
     this.load.spritesheet('zombie' , 'assets/sprite/burning-ghoul.png' , {frameWidth: 57, frameHeight: 60});
     this.load.spritesheet('zombie2' , 'assets/sprite/burning-ghoul.png' , {frameWidth: 57, frameHeight: 60});
     this.load.spritesheet('angel' , 'assets/sprite/angel.png' , {frameWidth: 122, frameHeight: 117});
-    // this.load.spritesheet('angel2' , 'assets/sprite/angel.png' , {frameWidth: 122, frameHeight: 117});
     this.load.spritesheet('perro' , 'assets/sprite/perro.png' , {frameWidth: 67, frameHeight: 32});
     this.load.spritesheet('perro2' , 'assets/sprite/perro.png' , {frameWidth: 67, frameHeight: 32});
     this.load.spritesheet('calabera' , 'assets/sprite/fire-skull.png' , {frameWidth: 96, frameHeight: 112});
-    // this.load.spritesheet('calabera2' , 'assets/sprite/fire-skull.png' , {frameWidth: 96, frameHeight: 112});
-    // this.load.spritesheet('calabera3' , 'assets/sprite/fire-skull.png' , {frameWidth: 96, frameHeight: 112});
     this.load.spritesheet('evil' , 'assets/sprite/hell-beast-idle.png' , {frameWidth: 56, frameHeight: 67});
     this.load.spritesheet('horse' , 'assets/sprite/nightmare-galloping.png' , {frameWidth: 139, frameHeight: 96});
     this.load.spritesheet('cat' , 'assets/sprite/cat.png' , {frameWidth: 32, frameHeight: 32});
@@ -62,7 +105,7 @@ function preload(){
 }
 
 function create(){    
-    
+
     //mapa
     mapa = this.make.tilemap({ key: 'mapa' });
     let tileSets = mapa.addTilesetImage('tileSets1', 'tiles');
@@ -76,17 +119,14 @@ function create(){
     solidos.setCollisionByProperty({ solido: true });
 
     //Fisicas del Personaje
-    this.personaje = this.physics.add.sprite(500,340,'pjidle', 0).setScale(2); // cambiar a 100,100
+    this.personaje = this.physics.add.sprite(60,180,'pjidle', 0).setScale(2); 
     //Fisicas del Enemigos
     this.zombie = this.physics.add.sprite(1800,200,'zombie', 0).setScale(2); 
     this.angel = this.physics.add.sprite(3000,500,'angel', 0).setScale(2);
-    // this.angel2 = this.physics.add.sprite(250,1600,'angel2', 0).setScale(2);
     this.perro = this.physics.add.sprite(1600,200,'perro', 0).setScale(2).setImmovable(true);
     this.perro2 = this.physics.add.sprite(2700,650,'perro2', 0).setScale(2);
     this.zombie2 = this.physics.add.sprite(2300,340,'zombie2', 0).setScale(2);
     this.calabera = this.physics.add.sprite(3900,200,'calabera', 0).setScale(1);
-    // this.calabera2 = this.physics.add.sprite(2000,1000,'calabera2', 0).setScale(1);
-    // this.calabera3 = this.physics.add.sprite(1300,1600,'calabera3', 0).setScale(1);
     this.evil = this.physics.add.sprite(5100,200,'evil', 0).setScale(2);
     this.horse = this.physics.add.sprite(4700,450,'horse', 0).setScale(1);
     this.boss = this.physics.add.sprite(50,340,'boss', 0).setScale(2);
@@ -97,15 +137,11 @@ function create(){
 
 
     // colisiones
-    // window.atke = this.atke;
     window.personaje = this.personaje;
     window.perro = this.perro;
     window.angel = this.angel;
-    // window.angel2 = this.angel2;
     window.perro2 = this.perro2;
     window.calabera = this.calabera;
-    // window.calabera2 = this.calabera2;
-    // window.calabera3 = this.calabera3;
     window.evil = this.evil;
     window.zombie = this.zombie;
     window.zombie2 = this.zombie2;
@@ -130,15 +166,11 @@ function create(){
     this.physics.add.collider(this.personaje, solidos);
     this.physics.add.collider(this.zombie, solidos);
     this.physics.add.collider(this.angel, solidos);
-    // this.physics.add.collider(this.angel2, solidos);
     this.physics.add.collider( this.perro, solidos);
     this.physics.add.collider( this.perro2, solidos);
     this.physics.add.collider( this.zombie2, solidos);
-    // this.physics.add.collider( this.calabera, solidos);
-    // this.physics.add.collider( this.calabera2, solidos);
     this.physics.add.collider( this.evil, solidos);
     this.physics.add.collider( this.horse, solidos);
-    // this.physics.add.collider( this.calabera3, solidos);
     this.physics.add.collider( this.boss, solidos);
     this.physics.add.collider( this.cat, solidos);
 
@@ -154,9 +186,12 @@ function create(){
     izquierda = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     derecha = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     abajo = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-    // atk = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
 
     // Animaciones 
+
+
+    // animacion personaje
 
     this.anims.create({
         key: 'idle',
@@ -173,13 +208,6 @@ function create(){
         framerate: 12
     });
 
-    // this.anims.create({
-    //     key: 'Atk',
-    //     frames: this.anims.generateFrameNumbers('pjAtk', { start: 0 , end: 3 }),
-    //     repeat: -1,
-    //     framerate: 12
-    // });
-    
     this.anims.create({
         key: 'jump',
         frames: this.anims.generateFrameNumbers('pjJump', { start: 0 , end: 4 }),
@@ -248,16 +276,12 @@ function create(){
     this.personaje.anims.play('idle');
     this.personaje.anims.play('run');
     this.personaje.anims.play('jump');
-    // this.personaje.anims.play('Atk');
     this.zombie.anims.play('zombie_run');
     this.angel.anims.play('angel_idle');
-    // this.angel2.anims.play('angel_idle');
     this.perro.anims.play('perro_run');
     this.perro2.anims.play('perro_run');
     this.zombie2.anims.play('zombie_run');
     this.calabera.anims.play('calabera_idle');
-    // this.calabera2.anims.play('calabera_idle');
-    // this.calabera3.anims.play('calabera_idle');
     this.evil.anims.play('evil_idle');
     this.horse.anims.play('horse_run');
     this.cat.anims.play('cat_idle');
@@ -362,20 +386,6 @@ timeline8.add({
 });
 
 timeline8.play();
-
-// let timeline9 = this.tweens.createTimeline();
-
-// timeline9.add({
-//     targets: this.calabera3,
-//     props: {
-//         x: { value: 300, duration: 2000, flipX: true },
-//         y: { value: 1600, duration: 5000,  },
-//     },   
-//     yoyo: true,
-//     repeat: -1 
-// });
-// timeline9.play();
-
 
 let timeline10 = this.tweens.createTimeline();
 
@@ -663,9 +673,6 @@ function update() {
     if((izquierda.isDown || derecha.isDown) && this.personaje.body.onFloor()){
         this.personaje.anims.play('run' ,true);
     }
-    // else if((atk.isDown) && this.personaje.body.onFloor()){
-    //     this.personaje.anims.play('Atk', true);
-    // }
     else if(!this.personaje.body.onFloor()){
         this.personaje.anims.play('jump');
     }
