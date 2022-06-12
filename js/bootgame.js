@@ -4,21 +4,7 @@ class BootGame extends Phaser.Scene {
   }
 
   preload() {
-    // loadbar
-    // this.bar = new Bar({ scene: this });
-
-    // load assets
-    // load tiled map
-
-    // images
-  
-    // atlas
-    this.load.atlas("atlas", "assets/atlas/atlas.png", "assets/atlas/atlas.json" );
-    // audio
- 
-    // title assets
-  
-
+    console.log('scene: bootGama');
   }
 
   create() {
