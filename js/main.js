@@ -26,11 +26,11 @@ class TitleScreen extends Phaser.Scene {
             switch (value) {
            
               case "catch":
-                swal("Tienes que salvar al pobre gatito, estos deminios no paran de hacer E-Commerce y estan eradicando con los gatitos");
+                swal("Tienes que salvar al pobre gatito, estos deminios no paran de hacer E-Commerce y estan erradicando con los gatitos");
                 break;
            
               default:
-                swal("Te moves con A,D y saltas con W, Tu objetivo es esquivar a los enemigos y rescatar el gato del final del nivel");
+                swal("Te moves con A (izquierda) D (derecha) y W (saltar). Tu objetivo es esquivar a los enemigos y rescatar al gato que se encuentra al final del nivel. Mucha Suerte");
             }
           });
 
@@ -98,9 +98,17 @@ function preload(){
     this.load.spritesheet('cat' , 'assets/sprite/cat.png' , {frameWidth: 32, frameHeight: 32});
     this.load.spritesheet('boss' , 'assets/sprite/boss_run.png' , {frameWidth: 128, frameHeight: 64});
 
-    //mapa
+    // Mapa
     this.load.tilemapTiledJSON('mapa', 'assets/mapa/mapa.json');
     this.load.image('tiles', 'assets/mapa/tileSets1.png'); 
+
+    // audios
+
+    this.load.audio("musica", "assets/sound/Believer.ogg");
+    this.load.audio("gato", "assets/sound/gato.ogg");
+    this.load.audio("fin", "assets/sound/gameover.ogg");
+
+
   
 }
 
@@ -119,7 +127,7 @@ function create(){
     solidos.setCollisionByProperty({ solido: true });
 
     //Fisicas del Personaje
-    this.personaje = this.physics.add.sprite(60,180,'pjidle', 0).setScale(2); 
+    this.personaje = this.physics.add.sprite(90,180,'pjidle', 0).setScale(2); 
     //Fisicas del Enemigos
     this.zombie = this.physics.add.sprite(1800,200,'zombie', 0).setScale(2); 
     this.angel = this.physics.add.sprite(3000,500,'angel', 0).setScale(2);
@@ -132,7 +140,12 @@ function create(){
     this.boss = this.physics.add.sprite(50,340,'boss', 0).setScale(2);
     this.cat = this.physics.add.sprite(6170,450,'cat', 0).setScale(2);
 
+    // musica
 
+    this.gato = this.sound.add("gato");
+    this.finDelJuego = this.sound.add("fin");
+    this.music = this.sound.add("musica", {loop: true, volume: 0.5});
+    this.music.play();
     
 
 
@@ -406,6 +419,7 @@ function update() {
     // colisiones y fin de partida
 
     this.physics.world.addCollider(this.personaje, this.zombie,()=>{
+        this.finDelJuego.play();
         zombie.destroy();
         swal("Lamentablemente tus habilidades no fueron suficiente para salvar ese gato de un malvado E-Commerce", {
             title: "MORISTE!",
@@ -421,10 +435,12 @@ function update() {
             default:
                 this.scene.restart();           
             }
-          });       
+          });
+        this.music.stop();       
         this.scene.stop();
       });
       this.physics.world.addCollider(this.personaje, this.perro,()=>{
+        this.finDelJuego.play();
         perro.destroy();
         swal("Lamentablemente tus habilidades no fueron suficiente para salvar ese gato de un malvado E-Commerce", {
             title: "MORISTE!",
@@ -440,10 +456,12 @@ function update() {
             default:
                 this.scene.restart();           
             }
-          });       
+          });
+        this.music.stop();       
         this.scene.stop();
       });
       this.physics.world.addCollider(this.personaje, this.angel,()=>{
+        this.finDelJuego.play();
         angel.destroy();
         swal("Lamentablemente tus habilidades no fueron suficiente para salvar ese gato de un malvado E-Commerce", {
             title: "MORISTE!",
@@ -459,10 +477,12 @@ function update() {
             default:
                 this.scene.restart();           
             }
-          });       
+          });
+        this.music.stop();       
         this.scene.stop();
       });
       this.physics.world.addCollider(this.personaje, this.angel2,()=>{
+        this.finDelJuego.play();
         angel2.destroy();
         swal("Lamentablemente tus habilidades no fueron suficiente para salvar ese gato de un malvado E-Commerce", {
             title: "MORISTE!",
@@ -478,10 +498,12 @@ function update() {
             default:
                 this.scene.restart();           
             }
-          });       
+          });
+        this.music.stop();       
         this.scene.stop();
       });
       this.physics.world.addCollider(this.personaje, this.zombie2,()=>{
+        this.finDelJuego.play();
         zombie2.destroy();
         swal("Lamentablemente tus habilidades no fueron suficiente para salvar ese gato de un malvado E-Commerce", {
             title: "MORISTE!",
@@ -497,10 +519,12 @@ function update() {
             default:
                 this.scene.restart();           
             }
-          });       
+          });
+        this.music.stop();       
         this.scene.stop();
       });
       this.physics.world.addCollider(this.personaje, this.evil,()=>{
+        this.finDelJuego.play();
         evil.destroy();
         swal("Lamentablemente tus habilidades no fueron suficiente para salvar ese gato de un malvado E-Commerce", {
             title: "MORISTE!",
@@ -516,10 +540,12 @@ function update() {
             default:
                 this.scene.restart();           
             }
-          });       
+          });
+        this.music.stop();       
         this.scene.stop();
       });
       this.physics.world.addCollider(this.personaje, this.perro2,()=>{
+        this.finDelJuego.play();
         perro2.destroy();
         swal("Lamentablemente tus habilidades no fueron suficiente para salvar ese gato de un malvado E-Commerce", {
             title: "MORISTE!",
@@ -535,10 +561,12 @@ function update() {
             default:
                 this.scene.restart();           
             }
-          });       
+          }); 
+        this.music.stop();      
         this.scene.stop();
       });
       this.physics.world.addCollider(this.personaje, this.calabera,()=>{
+        this.finDelJuego.play();
         calabera.destroy();
         swal("Lamentablemente tus habilidades no fueron suficiente para salvar ese gato de un malvado E-Commerce", {
             title: "MORISTE!",
@@ -554,10 +582,12 @@ function update() {
             default:
                 this.scene.restart();           
             }
-          });       
+          });
+        this.music.stop();       
         this.scene.stop();
       });
       this.physics.world.addCollider(this.personaje, this.boss,()=>{
+        this.finDelJuego.play();
         boss.destroy();
         swal("Lamentablemente tus habilidades no fueron suficiente para salvar ese gato de un malvado E-Commerce", {
             title: "MORISTE!",
@@ -573,10 +603,12 @@ function update() {
             default:
                 this.scene.restart();           
             }
-          });       
+          });
+        this.music.stop();       
         this.scene.stop();
       });
       this.physics.world.addCollider(this.personaje, this.calabera2,()=>{
+        this.finDelJuego.play();
         calabera2.destroy();
         swal("Lamentablemente tus habilidades no fueron suficiente para salvar ese gato de un malvado E-Commerce", {
             title: "MORISTE!",
@@ -592,10 +624,12 @@ function update() {
             default:
                 this.scene.restart();           
             }
-          });       
+          });   
+        this.music.stop();    
         this.scene.stop();
       });
       this.physics.world.addCollider(this.personaje, this.calabera3,()=>{
+        this.finDelJuego.play();
         calabera3.destroy();
         swal("Lamentablemente tus habilidades no fueron suficiente para salvar ese gato de un malvado E-Commerce", {
             title: "MORISTE!",
@@ -611,10 +645,12 @@ function update() {
             default:
                 this.scene.restart();           
             }
-          });       
+          });  
+        this.music.stop();     
         this.scene.stop();
       });
       this.physics.world.addCollider(this.personaje, this.horse,()=>{
+        this.finDelJuego.play();
         horse.destroy();
         swal("Lamentablemente tus habilidades no fueron suficiente para salvar ese gato de un malvado E-Commerce", {
             title: "MORISTE!",
@@ -630,11 +666,13 @@ function update() {
             default:
                 this.scene.restart();           
             }
-          });       
+          });  
+        this.music.stop();     
         this.scene.stop();
       });
 
       this.physics.world.addCollider(this.personaje, this.cat,()=>{
+        this.gato.play();
         cat.destroy();
         swal("Gracias a tu valentia y habilidad pudiste rescatar al gato de esos malvados demonios y evitar otro E-Commerce...", {
             title: "FELICIDADES RESCATASTE AL GATO!",
@@ -650,7 +688,8 @@ function update() {
             default:
                 this.scene.restart();        
             }
-          });       
+          });
+        this.music.stop();     
         this.scene.stop();
       });
       
